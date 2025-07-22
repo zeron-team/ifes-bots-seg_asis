@@ -90,17 +90,12 @@ python run_job.py
 ```
 🔄 Procesos y Conexiones
 1. Job Automatizado (Cron Job): El sistema se inicia con un cron job que ejecuta run_job.py una vez al día.
-
 * Fragmento de código
 ```text
 # Se ejecuta todos los días a las 9:00 AM
 0 9 * * * /ruta/al/proyecto/venv/bin/python /ruta/al/proyecto/run_job.py
 ```
-
 2. Extracción de Datos: El script se conecta a la base de datos de Moodle, ejecuta las consultas para obtener alumnos aprobados, desaprobados y pendientes.
-
 3. Envío de Mensajes Iniciales: Usando el Messaging Service SID, el sistema envía las plantillas de WhatsApp correspondientes a cada grupo de alumnos a través de la API de Twilio.
-
 4. Recepción de Respuestas: Cuando un alumno responde, WhatsApp envía el mensaje a Twilio. Twilio lo reenvía al webhook configurado en el Messaging Service (tu URL de ngrok).
-
 5. Procesamiento y Respuesta: El servidor FastAPI recibe la petición en el endpoint /whatsapp, la procesa usando el message_handler y envía una respuesta de texto libre de vuelta al alumno a través del mismo Messaging Service.
