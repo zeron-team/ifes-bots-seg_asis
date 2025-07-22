@@ -1,0 +1,7 @@
+twilio
+python-dotenv
+sqlalchemy
+mysql-connector-python
+fastapi
+uvicorn[standard]
+python-multipart
