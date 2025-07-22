@@ -19,6 +19,7 @@ Automatización: Cron Jobs (Linux/macOS)
 📂 Estructura del Proyecto
 El proyecto está organizado en módulos con responsabilidades bien definidas:
 
+```text
 chatbot_moodle_fastapi/
 ├── app/
 │   ├── chatbot/
@@ -34,6 +35,8 @@ chatbot_moodle_fastapi/
 ├── run_job.py                  # Script para ejecutar el job manualmente.
 ├── .env                        # Archivo de configuración y credenciales.
 └── requirements.txt            # Lista de dependencias de Python.
+```
+
 🚀 Puesta en Marcha (RUN)
 Sigue estos pasos para configurar y ejecutar el proyecto en un entorno de desarrollo.
 
