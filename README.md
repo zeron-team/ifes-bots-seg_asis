@@ -78,7 +78,7 @@ uvicorn main:app --reload
 Este comando crea un túnel público a tu servidor local para que Twilio pueda enviarte las respuestas de los usuarios.
 
 ```Bash
-ngrok http 8000
+./ngrok http 8000
 ```
 Copia la URL https://... que genera ngrok y configúrala en el webhook de tu Messaging Service en la consola de Twilio.
 

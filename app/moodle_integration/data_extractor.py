@@ -6,12 +6,11 @@ from app.moodle_integration import queries
 
 def get_students_for_follow_up():
     """
-    Se conecta a la BD de Moodle, ejecuta la consulta y clasifica a los alumnos.
+    Se conecta a la BD de Moodle y obtiene 3 listas: aprobados, desaprobados y pendientes.
     """
-    students = {"approved": [], "disapproved": []}
+    students = {"approved": [], "disapproved": [], "pending": []}
 
     try:
-        # Crea la cadena de conexión
         db_uri = (
             f"mysql+mysqlconnector://{config.DB_USER}:{config.DB_PASSWORD}@"
             f"{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}"
@@ -19,23 +18,30 @@ def get_students_for_follow_up():
         engine = sqlalchemy.create_engine(db_uri)
 
         with engine.connect() as connection:
-            results = connection.execute(sqlalchemy.text(queries.GET_RECENT_QUIZ_RESULTS))
+            # 1. Obtener aprobados y desaprobados
+            results_graded = connection.execute(sqlalchemy.text(queries.GET_RECENT_QUIZ_RESULTS))
+            for row in results_graded:
+                student_data = dict(row._mapping)
+                student_data['whatsapp_phone'] = 'whatsapp:+5491135665266'  # ¡Número de prueba fijo!
 
-            for row in results:
-                student_data = dict(row._mapping)  # Convierte la fila a un diccionario
-
-                # Asigna el número de teléfono en formato correcto para WhatsApp
-                #student_data['whatsapp_phone'] = f"whatsapp:{student_data['phone']}"
-                student_data['whatsapp_phone'] = 'whatsapp:+5491164640871'  # ¡Número de prueba fijo!
-
-                # Clasifica al alumno
                 if student_data['final_grade'] >= student_data['passing_grade']:
                     students["approved"].append(student_data)
                 else:
                     students["disapproved"].append(student_data)
 
-            print(f"Procesados {len(students['approved'])} aprobados y {len(students['disapproved'])} desaprobados.")
-            return students
+            # 2. Obtener pendientes
+            results_pending = connection.execute(sqlalchemy.text(queries.GET_PENDING_QUIZ_STUDENTS))
+            for row in results_pending:
+                student_data = dict(row._mapping)
+                student_data['whatsapp_phone'] = 'whatsapp:+5491135665266'  # ¡Número de prueba fijo!
+                students["pending"].append(student_data)
+
+        print(
+            f"Procesados: {len(students['approved'])} aprobados, "
+            f"{len(students['disapproved'])} desaprobados, "
+            f"{len(students['pending'])} pendientes."
+        )
+        return students
 
     except Exception as e:
         print(f"Error al conectar o extraer datos de Moodle: {e}")
